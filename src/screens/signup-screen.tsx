@@ -136,8 +136,8 @@ export default () => {
             await updateProfile(credential.user, {
                 displayName: nickName,
             });
-            // b-5. 저장이 완료되면,, 로그인 화면으로 이동 or 자동 로그인=>홈화면
-            navigation('/');
+            // b-5. 저장이 완료되면,, 로그인 화면으로 이동 or 자동 로그인=>홈화면 본인은 로그인 화면으로 이동 선택
+            navigation('/signin');
         } catch (e) {
             console.log(e);
             // [Firebase erorr]--통신X,중복된이메일,잘못된PW...

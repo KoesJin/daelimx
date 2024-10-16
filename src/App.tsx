@@ -84,7 +84,7 @@ export default App;
 const GlobalStyle = createGlobalStyle`
   ${reset}
   body{
-    background-color: black;
+    background: linear-gradient(135deg, #000000, #1a2a6c); /* 검정에서 어두운 파란색으로 */
     color:  white;
   }
 `;

@@ -3,7 +3,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { auth } from '../firebaseConfig';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FirebaseError } from 'firebase/app';
 import EmailSignUpBtn from '../components/EmailSignUpBtn';
 import GoogleSignupBtn from '../components/GoogleSignupBtn';
@@ -185,7 +185,7 @@ export default () => {
     // 페이지 레이아웃(Design) 반환 --- Rendering
     return (
         <Container>
-            <Logo src={`${process.env.PUBLIC_URL}/DaelimX_title.png`} />
+            <Logo src={`${process.env.PUBLIC_URL}/SeokProject.png`} />
 
             <Form>
                 <Title>지금 , 새로운 세계로</Title>

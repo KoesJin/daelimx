@@ -14,7 +14,14 @@ export default () => {
     return (
         <Container>
             <Title>Home</Title>
-            <button onClick={signOut}>로그아웃</button>
+            <button
+                onClick={() => {
+                    signOut();
+                    window.location.reload(); // 로그아웃 후 페이지 새로고침
+                }}
+            >
+                로그아웃
+            </button>
         </Container>
     );
 };
