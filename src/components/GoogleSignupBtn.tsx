@@ -2,7 +2,6 @@ import { FirebaseError } from 'firebase/app';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { styled } from 'styled-components';
 import { auth } from '../firebaseConfig';
-import { async } from '@firebase/util';
 import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
@@ -16,30 +15,41 @@ const Container = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 12px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    margin-top: 10px; /* 위쪽 여백 */
+
+    &:hover {
+        background-color: #f1f1f1;
+        transform: translateY(-5px); /* 살짝 위로 이동하는 효과 */
+    }
+
     svg {
         fill: rgb(210, 78, 61);
-        width: 18px;
+        width: 24px;
+        height: 24px;
     }
 `;
 
 const Title = styled.p`
     color: black;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
 `;
 
 export default function () {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
 
-    //Google 로그인 진행하기 feat.Server(Firebase)
+    // Google 로그인 진행하기 feat.Server(Firebase)
     const onClick = async () => {
         try {
-            // 1. provider 생성 (Goolge 로그인을 위한 제공자)
+            // 1. provider 생성 (Google 로그인을 위한 제공자)
             const provider = new GoogleAuthProvider();
-            // 2. Google 로그인 창 띄우기 (server ,,,, 시간 차,, 비동기화.. async-awit)
+            // 2. Google 로그인 창 띄우기
             await signInWithPopup(auth, provider);
             // 3. 로그인 성공 시, Home 화면으로 이동
-            navigation('/');
-            // 4.
+            navigate('/');
         } catch (e) {
             console.log(e);
             // 만일 Firebase 에러라면 알람
@@ -51,7 +61,6 @@ export default function () {
 
     return (
         <Container onClick={onClick}>
-            {' '}
             <svg
                 className="w-6 h-6 text-gray-800 dark:text-white"
                 aria-hidden="true"
@@ -62,9 +71,9 @@ export default function () {
                 viewBox="0 0 24 24"
             >
                 <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M12.037 21.998a10.313 10.313 0 0 1-7.168-3.049 9.888 9.888 0 0 1-2.868-7.118 9.947 9.947 0 0 1 3.064-6.949A10.37 10.37 0 0 1 12.212 2h.176a9.935 9.935 0 0 1 6.614 2.564L16.457 6.88a6.187 6.187 0 0 0-4.131-1.566 6.9 6.9 0 0 0-4.794 1.913 6.618 6.618 0 0 0-2.045 4.657 6.608 6.608 0 0 0 1.882 4.723 6.891 6.891 0 0 0 4.725 2.07h.143c1.41.072 2.8-.354 3.917-1.2a5.77 5.77 0 0 0 2.172-3.41l.043-.117H12.22v-3.41h9.678c.075.617.109 1.238.1 1.859-.099 5.741-4.017 9.6-9.746 9.6l-.215-.002Z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                 />
             </svg>
             <Title>Google 계정으로 회원가입</Title>

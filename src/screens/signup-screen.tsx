@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { auth } from '../firebaseConfig';
 import { Link, useNavigate } from 'react-router-dom';
 import { FirebaseError } from 'firebase/app';
-// import LogoImg from "../assets/images/DaelimX_Title.png";
 
 // styled-component 를 통한 css 구성
 const Container = styled.div`
@@ -155,7 +154,7 @@ export default () => {
     // 페이지 레이아웃(Design) 반환 --- Rendering
     return (
         <Container>
-            <Logo src={`${process.env.PUBLIC_URL}/DaelimX_title.png`} />
+            <Logo src={`${process.env.PUBLIC_URL}/SeokProject.png`} />
             {/* <Title>회원가입</Title> */}
             <Form>
                 <InputTitle>닉네임*</InputTitle>

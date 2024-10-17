@@ -3,40 +3,53 @@ import { styled } from 'styled-components';
 
 const Container = styled.div`
     background-color: #1f8acc;
-    border-radius: 20px;
+    border-radius: 30px;
     padding: 10px 20px;
     cursor: pointer;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+    &:hover {
+        background-color: #146a9c;
+        transform: translateY(-5px); /* 살짝 위로 이동하는 효과 */
+    }
+
     svg {
-        width: 18px;
+        width: 24px;
+        height: 24px;
+        stroke: white;
     }
 `;
 
-const Title = styled.p``;
+const Title = styled.p`
+    font-size: 16px;
+    color: white;
+    font-weight: 600;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+`;
 
 export default function () {
-    //회원가입 페이지(/signup)로 이동하기
-    const navigation = useNavigate();
+    // 회원가입 페이지(/signup)로 이동하기
+    const navigate = useNavigate();
 
-    // 회원가입페이지 이동
+    // 회원가입 페이지로 이동
     const onClick = () => {
-        navigation('/signup');
+        navigate('/signup');
     };
 
     return (
         <Container onClick={onClick}>
-            {' '}
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-6"
             >
                 <path
                     strokeLinecap="round"
