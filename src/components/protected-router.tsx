@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // 로그인 되어있지 않은 상태에서 Home/Profile 접근 막음
 import { Navigate } from 'react-router-dom';
 import { auth } from '../firebaseConfig';
@@ -11,6 +13,7 @@ export default ({ children }: Props) => {
     // 1. 현재 유저가 로그인 했는지 안했는지 여부를 알아야한다.
     // user 안의 값이 존재한다면 1-A로 , 없다면 1-B로 이동
     const user = auth.currentUser;
+
     // 1-A : 로그인을 한 상태라면?
     if (user) {
         // 그대로 진행하면 됨 (Home 화면에 머물면됨)

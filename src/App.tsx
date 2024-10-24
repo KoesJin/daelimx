@@ -5,6 +5,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import LoadingScreen from './screens/loading-screens';
 import { auth } from './firebaseConfig';
 import reset from 'styled-reset';
+import Layout from './screens/layout';
 
 // 전체 css 스타일을 Reset
 const GlobalStyle = createGlobalStyle`
@@ -71,7 +72,13 @@ function App() {
                     {' '}
                     <CSSTransition key={location.pathname} classNames="fade" timeout={500}>
                         <AnimationContainer>
-                            <Outlet />
+                            {location.pathname === '/' || location.pathname === '/profile' ? (
+                                <Layout>
+                                    <Outlet />
+                                </Layout>
+                            ) : (
+                                <Outlet />
+                            )}
                         </AnimationContainer>
                     </CSSTransition>
                 </TransitionGroup>
