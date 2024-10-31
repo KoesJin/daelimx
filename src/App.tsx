@@ -36,7 +36,7 @@ const GlobalStyle = createGlobalStyle`
 
 const AnimationContainer = styled.div`
     width: 100%;
-    height: 100%;
+    height: 100vh;
     position: relative;
 `;
 

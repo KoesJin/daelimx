@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { auth } from '../firebaseConfig';
 
 const Container = styled.div`
     display: grid;
@@ -36,7 +37,7 @@ const MenuItem = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-    color: inherit;
+    color: white;
 `;
 
 const Content = styled.div``;
@@ -46,6 +47,23 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+    // 페이지 이동을 위해 사용
+    const navigate = useNavigate();
+
+    // Page Logic Rendering
+    // - 로그아웃 함수
+    const signOut = async () => {
+        // 알림창을 통해서 진짜 로그아웃을 할 것인지 확인
+        const isOk = window.confirm('로그아웃 하시겠습니까?');
+
+        if (isOk) {
+            // 로그아웃
+            await auth.signOut();
+            //로그아웃 후 홈화면으로 이동
+            navigate('/signin');
+        }
+    };
+
     return (
         <Container>
             <Menu>
@@ -97,27 +115,29 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                 <BoottomMenu>
                     {/* 로그아웃 메뉴 */}
-                    <StyledLink to={'/signin'}>
-                        <MenuItem>
-                            <svg
-                                className="w-6 h-6 text-gray-800 dark:text-white"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                />
-                            </svg>
-                        </MenuItem>
-                    </StyledLink>
+                    <MenuItem
+                        onClick={() => {
+                            signOut();
+                        }}
+                    >
+                        <svg
+                            className="w-6 h-6 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                            />
+                        </svg>
+                    </MenuItem>
                 </BoottomMenu>
             </Menu>
 
