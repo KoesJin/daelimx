@@ -8,6 +8,7 @@ const Container = styled.div`
     grid-template-columns: 1fr 8fr;
     height: calc(100vh - 5vh);
     padding: 20px 0;
+    max-width: 860px;
 `;
 
 const BoottomMenu = styled.div`

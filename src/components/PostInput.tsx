@@ -1,18 +1,21 @@
 // 게시글을 작성하고 , Server(FireBase)에 업로드하는 컴포넌트
 
-import { ReactElement, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { styled } from 'styled-components';
+import { auth, firestore } from '../firebaseConfig';
+import { Post } from '../types/PostInput.type';
+import { addDoc, collection } from 'firebase/firestore';
 
 const Form = styled.form`
     display: flex;
     gap: 10px;
-    border: 1px solid white;
+    border: 1px solid linear-gradient(135deg, #000000, #1a5a6c);
     padding: 20px 5px;
-    max-width: 700px;
+    /* max-width: 700px; */
 `;
 const Profile = styled.div`
-    background-color: bisque;
-    width: 30px;
+    /* background-color: bisque; */
+    width: 10px;
 `;
 const PostArea = styled.div`
     display: flex;
@@ -25,7 +28,9 @@ const TextArea = styled.textarea`
     resize: none;
     background: linear-gradient(135deg, #000000, #1a2a6c);
     color: white;
-    flex: 1;
+    width: 100%;
+    font-size: 20px;
+    font-weight: bold;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
         'Open Sans', 'Helvetica Neue', sans-serif;
     // 1개는 상태
@@ -84,6 +89,9 @@ const PostInput = () => {
     const [post, setPost] = useState<string>('');
     const [file, setFile] = useState<File>();
 
+    // 1-a TextArea 의 정보를 담을 Ref 생성
+    const textreaRef = useRef<HTMLTextAreaElement | null>(null);
+
     // 2. 작성한 / 변경된 텍스트를 State에 저장
     const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         // 1. 텍스트 변경 시 발생하는 Event에서 value값 저장
@@ -93,6 +101,14 @@ const PostInput = () => {
         } = e;
         // 2. value 값을 State에 저장};
         setPost(value);
+
+        // 3. 텍스트를 개행 높이 부분을 통해 TextArea높이 자동 조절
+        if (textreaRef && textreaRef.current) {
+            // - TextArea높이 = 기본 설정
+            textreaRef.current.style.height = 'auto';
+            // - TextArea 스크롤 높이 (=TextArea의 높이)
+            textreaRef.current.style.height = `${textreaRef.current.scrollHeight}px`;
+        }
     };
 
     // 3. 업로드한 이미지(File)를 State에 저장
@@ -112,15 +128,64 @@ const PostInput = () => {
     };
 
     // 4. 작성한 게시글 정보를 Server(Firebase)에 업로드
-    const onSubmit = () => {};
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        // 페이지 랜더링 막는 코드
+        e.preventDefault();
+        // ----- Loading Start ------
+        try {
+            // 0. [방어코드] : 로그인하지 않았거나 , 게시글 내용이 없거나 .. 실행 x
+            const user = auth.currentUser;
+
+            if (user === null || post === '') {
+                return;
+            }
+
+            // 1. Firebase에 전달할 정보를 담은 객체(Object) 생성
+            //  - 게시글 내용
+            //  - 게시글 작성(생성) 시간
+            //  - 게시글 작성자 (user)
+            //  - 게시글 작성자 uid(키 값)
+            //  - 이미지
+
+            // 타입스크립트 사용 x
+            // const myPost = {
+            //     // key는 myPost안의 post , value는 useState의 post
+            //     // post: post, 랑 같은 코드
+            //     post,
+            //     createAt: Date.now(), //UTC Time -> 1970년부터 잰 시간
+            //     nickname: user.displayName || '익명', // 3항 연산자 대신 타입스크립트 구문으로 값이 없을시 처리도 해주는 코드
+            //     // 값이 아무것도 없다면 익명으로 표시해라
+            //     userId: user.uid,
+            // };
+
+            // 타입스크립트 사용 o
+            const myPost: Post = {
+                post: post,
+                createAt: Date.now(),
+                nickname: user.displayName || '익명',
+                userId: user.uid,
+            };
+
+            // 2. Firebase에 전달
+            await addDoc(collection(firestore, 'posts'), myPost);
+            window.location.reload();
+        } catch (error) {
+            // ----- Error 발생 시 , 예외처리 ------
+            console.log(error);
+        } finally {
+            // ---- Loading End ----
+        }
+    };
 
     return (
-        <Form>
+        <Form onSubmit={(e) => onSubmit(e)}>
             {/* 프로필  이미지 */}
             <Profile></Profile>
             <PostArea>
                 {/* 게시글 영역 */}
                 <TextArea
+                    ref={textreaRef}
+                    rows={5}
                     value={post}
                     onChange={(e) => onChange(e)}
                     maxLength={200}
@@ -129,7 +194,7 @@ const PostInput = () => {
                 <BottomMenu>
                     <AttachFileButton htmlFor="file">{file ? '업로드완료' : '사진업로드'}</AttachFileButton>
                     <AttachFileInut onChange={(file) => onChangeFile(file)} type="file" id="file" accept="image/*" />
-                    <SubmitButton onSubmit={onSubmit} type={'submit'} value={'작성하기'} />
+                    <SubmitButton type={'submit'} value={'작성하기'} />
                 </BottomMenu>
             </PostArea>
         </Form>
