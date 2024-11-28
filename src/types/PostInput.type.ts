@@ -1,4 +1,4 @@
-export type Post = {
+export type IPost = {
     /**
      * 작성한 게시글 내용
      */
@@ -6,7 +6,7 @@ export type Post = {
     /**
      * 게시글 작성 시간(UTC)
      */
-    createAt: Number;
+    createdAt: Number;
     /**
      * 작성자 닉네임
      */

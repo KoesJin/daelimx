@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { auth, firestore } from '../firebaseConfig';
-import { Post } from '../types/PostInput.type';
+import { IPost } from '../types/PostInput.type';
 import { addDoc, collection } from 'firebase/firestore';
 
 const Form = styled.form`
@@ -88,6 +88,7 @@ const PostInput = () => {
     // 1. 작성한 텍스트, 업로드한 이미지
     const [post, setPost] = useState<string>('');
     const [file, setFile] = useState<File>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     // 1-a TextArea 의 정보를 담을 Ref 생성
     const textreaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -132,15 +133,16 @@ const PostInput = () => {
         // 페이지 랜더링 막는 코드
         e.preventDefault();
         // ----- Loading Start ------
+        setLoading(true);
         try {
-            // 0. [방어코드] : 로그인하지 않았거나 , 게시글 내용이 없거나 .. 실행 x
+            // 1. [방어코드] : 로그인하지 않았거나 , 게시글 내용이 없거나 .. 실행 x
             const user = auth.currentUser;
 
             if (user === null || post === '') {
                 return;
             }
 
-            // 1. Firebase에 전달할 정보를 담은 객체(Object) 생성
+            // 2. Firebase에 전달할 정보를 담은 객체(Object) 생성
             //  - 게시글 내용
             //  - 게시글 작성(생성) 시간
             //  - 게시글 작성자 (user)
@@ -152,27 +154,30 @@ const PostInput = () => {
             //     // key는 myPost안의 post , value는 useState의 post
             //     // post: post, 랑 같은 코드
             //     post,
-            //     createAt: Date.now(), //UTC Time -> 1970년부터 잰 시간
+            //     createdAt: Date.now(), //UTC Time -> 1970년부터 잰 시간
             //     nickname: user.displayName || '익명', // 3항 연산자 대신 타입스크립트 구문으로 값이 없을시 처리도 해주는 코드
             //     // 값이 아무것도 없다면 익명으로 표시해라
             //     userId: user.uid,
             // };
 
             // 타입스크립트 사용 o
-            const myPost: Post = {
+            const myPost: IPost = {
                 post: post,
-                createAt: Date.now(),
+                createdAt: Date.now(),
                 nickname: user.displayName || '익명',
                 userId: user.uid,
             };
 
-            // 2. Firebase에 전달
+            // 3. Firebase에 전달
             await addDoc(collection(firestore, 'posts'), myPost);
-            window.location.reload();
+            // 4. 게시글 작성 후 , 내가 작성한 게시글을 RESET
+            // window.location.reload();
+            setPost('');
         } catch (error) {
             // ----- Error 발생 시 , 예외처리 ------
             console.log(error);
         } finally {
+            setLoading(false);
             // ---- Loading End ----
         }
     };
@@ -194,7 +199,7 @@ const PostInput = () => {
                 <BottomMenu>
                     <AttachFileButton htmlFor="file">{file ? '업로드완료' : '사진업로드'}</AttachFileButton>
                     <AttachFileInut onChange={(file) => onChangeFile(file)} type="file" id="file" accept="image/*" />
-                    <SubmitButton type={'submit'} value={'작성하기'} />
+                    <SubmitButton type={'submit'} value={loading ? '업로드중 ' : '작성하기'} />
                 </BottomMenu>
             </PostArea>
         </Form>
